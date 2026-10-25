@@ -1,0 +1,6 @@
+{
+  "name": "Partna - Gambian Vehicle Spare-Parts Marketplace",
+  "description": "Connecting mechanics and car owners with trusted spare-parts dealers across The Gambia for seamless discovery, quotations, and delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,652 @@
+# MASTER BUILD PROMPT — GAMBIAN VEHICLE SPARE-PARTS MARKETPLACE MVP
+Use the PDF figma design that i uploaded as design refrence.
+## 1. YOUR ROLE
+
+Act as a senior full-stack software engineer, product architect, database designer, UI/UX implementation specialist, security engineer, and pragmatic technical lead with at least 15 years of experience building production-quality web applications.
+
+Your task is to transform my existing Figma design into a functional, responsive, deployable MVP for a vehicle spare-parts marketplace serving The Gambia.
+
+**Figma design:** https://www.figma.com/design/Cco0OiblF7RMGWt5SPJdFe/Untitled?node-id=0-1&t=QRWNux9a4RBNmdLo-1
+
+**Project specification:** I will provide the relevant spare-parts concept document and any existing source code.
+
+This is a real MVP intended to demonstrate my product thinking, technical ability, and understanding of a practical problem in The Gambia. It must be usable, not just visually impressive.
+
+Do not simply generate a landing page, static dashboard, or collection of disconnected screens. Build a coherent application in which the frontend, backend, database, authentication, permissions, and business workflows work together.
+
+## 2. PRODUCT OBJECTIVE
+
+The platform connects mechanics who need spare parts with dealers who stock them. It should reduce the time mechanics spend visiting different shops, searching for parts, contacting suppliers, and arranging collection or delivery.
+
+The platform must allow mechanics to:
+
+* Find parts across multiple dealers.
+* Browse a particular dealer's inventory.
+* Submit requests for parts they cannot identify or find.
+* Upload photographs and record voice notes to explain their requirements.
+* Receive and compare dealer offers.
+* Place or confirm orders.
+* Request delivery or arrange collection.
+* Track requests, orders, and deliveries from a dedicated dashboard.
+
+Dealers must be able to register, undergo administrator approval, manage inventory, respond to requests, process orders, and coordinate fulfilment.
+
+Administrators must be able to approve dealers and oversee marketplace operations.
+
+The primary market is The Gambia. Use Gambian dalasi (GMD), appropriate local address and contact fields, and realistic local workflows.
+
+## 3. DESIGN-FIRST IMPLEMENTATION
+
+The new Figma design is the primary source of truth for the interface.
+
+Before writing code:
+
+1. Inspect every accessible Figma page, frame, component, and user flow.
+2. Identify the intended screens for mechanics, dealers, administrators, and vehicle owners if that role is represented in the design.
+3. Map the frames to their corresponding routes and actions.
+4. Identify shared components, design tokens, colours, typography, spacing, icons, and responsive layouts.
+5. Identify missing screens required to complete the workflows described in this prompt.
+6. Create an implementation plan that prioritizes a complete end-to-end MVP.
+
+Reproduce the design as faithfully as possible. Preserve its visual identity, intended hierarchy, layouts, and navigation.
+
+Do not replace the design with a generic AI-generated dashboard. Do not arbitrarily change the colour palette, add unnecessary gradients, or redesign working layouts simply because another style is easier to implement.
+
+Where a necessary screen is missing from Figma, design it using the existing design system.
+
+If you cannot access the Figma URL, explicitly tell me and ask for exported screenshots or assets. Do not pretend to have inspected inaccessible frames.
+
+## 4. TECHNOLOGY AND ARCHITECTURE
+
+Use a modern, maintainable web stack compatible with Google AI Studio's supported development environment.
+
+Preferred technologies:
+
+* Frontend: React and TypeScript.
+* Styling: Tailwind CSS or the styling system already established in the project.
+* Routing: React Router or an equivalent supported router.
+* Backend: secure server-side API endpoints using a supported Node.js environment.
+* Database: Firebase Firestore, or another supported persistent database if an existing project already uses one.
+* Authentication: Firebase Authentication or an equivalent secure authentication system.
+* File storage: Firebase Storage or an equivalent persistent object-storage service.
+* Deployment: a compatible production hosting platform.
+
+Inspect the existing project before selecting or replacing technologies. Do not unnecessarily rebuild an existing working codebase.
+
+Use a clear separation between UI components, application logic, API services, data access, and validation.
+
+Keep secrets and privileged credentials on the server. Use environment variables for configuration. Never expose private API keys, service-account credentials, or administrator privileges in frontend code.
+
+If a required external service is not configured, implement the appropriate integration boundary and explain exactly what remains to be configured. Do not silently substitute a fake implementation.
+
+## 5. USER ROLES AND ACCESS CONTROL
+
+Implement role-based access control for:
+
+### A. Mechanic
+
+Can search inventory, browse dealers, submit requests, upload supporting media, receive offers, manage orders, and track deliveries.
+
+### B. Dealer
+
+Can register, submit a business verification application, manage an approved dealer profile, maintain inventory, respond to requests, manage orders, and coordinate fulfilment.
+
+### C. Administrator
+
+Can review dealer applications, approve or reject registrations, request additional information, manage account status, oversee requests, and monitor orders and deliveries.
+
+### D. Vehicle owner, if included in the Figma design
+
+Implement the vehicle-owner workflows represented in the design. Reuse shared marketplace services and enforce appropriate permissions. Do not invent a large, separate vehicle-owner product beyond the agreed MVP.
+
+A user must never gain privileges by modifying frontend state, local storage, a URL, or an API request.
+
+Enforce permissions on the backend for every protected operation. A dealer must not access another dealer's private data or modify another dealer's inventory. Mechanics must only access their own private requests and orders, except for information explicitly intended to be public.
+
+## 6. MECHANIC APPLICATION
+
+### 6.1 Dedicated home dashboard
+
+Build a mechanic dashboard that provides an immediate overview of marketplace activity.
+
+Include:
+
+* Active part requests.
+* Requests awaiting dealer responses.
+* Offers awaiting the mechanic's decision.
+* Confirmed orders.
+* Orders awaiting preparation.
+* Active deliveries.
+* Recently completed orders.
+* Quick actions for finding a part and submitting a request.
+
+Dashboard figures must be derived from actual database records. Do not hardcode counters or generate fake activity.
+
+Provide useful loading, empty, error, and success states.
+
+### 6.2 Find Parts
+
+Support two distinct entry points.
+
+**Path A: Browse a specific dealer**
+
+1. Display approved dealers with useful information, including business name, location, and relevant availability information.
+2. Allow the mechanic to select a dealer.
+3. Display that dealer's active inventory.
+4. Support searching and filtering within the selected inventory.
+5. Open a detailed listing when a part is selected.
+
+**Path B: Search across all dealers**
+
+1. Provide marketplace-wide search.
+2. Search active listings belonging to all approved dealers.
+3. Display matching parts from different dealers in one results page.
+4. Show relevant details such as part name, price, dealer, location, condition, and stock status.
+5. Allow filtering by category, vehicle make and model, price, condition, and location where supported by the data.
+6. Open the exact listing and dealer associated with the selected result.
+
+A marketplace-wide search must not be restricted to the dealer currently being browsed.
+
+### 6.3 Part details
+
+Each listing should support:
+
+* Part name and description.
+* Images.
+* Vehicle compatibility information.
+* Part number, where available.
+* Condition, such as new or used.
+* Price in GMD.
+* Stock status and available quantity, where applicable.
+* Dealer name and location.
+* Last stock confirmation or update time.
+* Order or enquiry actions appropriate to the listing.
+
+Only display claims about availability that are supported by stored data.
+
+Prevent orders from being confirmed when the listing is inactive or the required quantity is unavailable. Revalidate stock and price on the server when confirming an order.
+
+### 6.4 Part request system
+
+Create a dedicated request form for parts that are unavailable, difficult to identify, or not listed in the marketplace.
+
+Required and optional fields should be appropriately validated. Include:
+
+* Vehicle make.
+* Vehicle model.
+* Vehicle year, if known.
+* Part name or description.
+* Part number, if known.
+* Additional instructions.
+* Preferred condition, if relevant.
+* Relevant images.
+* An optional recorded voice note.
+
+Allow multiple images within defined file-count and file-size limits.
+
+Implement actual image uploads and voice recording, playback, and upload. Store uploaded files in persistent storage and retain their metadata and references in the database.
+
+Validate file types, sizes, and permissions. Do not store large binary files directly in database documents.
+
+The mechanic must be able to review attachments before submitting the request.
+
+After submission:
+
+1. Generate a unique request reference.
+2. Save the request persistently.
+3. Assign an initial status and creation timestamp.
+4. Route the request to relevant approved dealers based on part category, inventory, and service area when those data are available.
+5. Provide a broader fallback when matching is insufficient.
+6. Make the request and its attachments accessible to authorized responding dealers.
+7. Show the request's status and dealer responses in the mechanic dashboard.
+
+Dealers must be able to listen to voice notes and inspect images.
+
+If browser or hosting limitations prevent voice recording or file uploads from working, identify the limitation and implement a reliable supported alternative. Do not display a fake recording or upload button.
+
+### 6.5 Dealer offers and selection
+
+Dealers should be able to submit offers against requests, including:
+
+* Part description.
+* Price in GMD.
+* Condition.
+* Availability.
+* Estimated fulfilment time, if known.
+* Relevant notes.
+* Offer creation time.
+
+Mechanics should be able to compare offers, inspect the responding dealer, and select an offer.
+
+Prevent a dealer from responding to requests outside their permitted access and prevent unauthorized modifications to another dealer's offers.
+
+Once an offer is accepted, create or associate the appropriate order, record the accepted price, and update the request lifecycle consistently.
+
+## 7. DEALER APPLICATION
+
+### 7.1 Registration and approval
+
+Implement a separate dealer registration and onboarding flow.
+
+Collect:
+
+* Owner or authorized contact name.
+* Business name.
+* Email and phone number.
+* Password or secure authentication setup.
+* Shop address and operating area.
+* Business category and relevant vehicle-part categories.
+* Supporting verification information or documents, according to the platform's policy.
+
+After submission, create a dealer application with a persistent status of `pending`.
+
+The dealer must see a useful application-status page. Allow corrections and resubmission when an administrator requests additional information.
+
+Possible application statuses:
+
+* Pending.
+* More information required.
+* Approved.
+* Rejected.
+* Suspended.
+
+Only approved dealers may publish active listings, respond to requests, and conduct marketplace operations.
+
+Enforce these rules on the backend. Hiding buttons in the frontend is not sufficient.
+
+### 7.2 Dealer dashboard
+
+Provide:
+
+* Overview of inventory, new requests, active orders, and deliveries.
+* Inventory management.
+* Incoming part requests.
+* Request details with images and playable voice notes.
+* Offer submission and management.
+* Order management.
+* Delivery coordination.
+* Business profile and account settings.
+
+All dashboard metrics must reflect real records.
+
+### 7.3 Inventory management
+
+Allow authorized dealers to:
+
+* Create listings.
+* Edit listing details.
+* Upload and manage images.
+* Set prices in GMD.
+* Define condition and vehicle compatibility.
+* Set and update stock quantity.
+* Mark items unavailable.
+* Deactivate listings.
+* View their active and inactive listings.
+
+Validate data before saving. Prevent dealers from editing or deleting another dealer's listings.
+
+Search results should exclude inactive listings and should reflect inventory updates without requiring a full application rebuild.
+
+### 7.4 Request management
+
+Dealers must be able to view requests routed to them, inspect the details and attachments, submit offers, and track the outcome.
+
+Include appropriate statuses such as:
+
+* New.
+* Under review.
+* Offer submitted.
+* Awaiting mechanic decision.
+* Accepted.
+* Declined or expired.
+* Fulfilled.
+
+Define valid transitions and prevent inconsistent status updates.
+
+### 7.5 Order management
+
+Allow dealers to view orders associated with their business, confirm fulfilment readiness, prepare parts, and update order status.
+
+Include timestamps and relevant order details. Preserve the agreed price and item information in the order record so subsequent inventory changes do not rewrite the purchase history.
+
+## 8. DELIVERY SYSTEM
+
+Delivery is a core MVP feature, not a placeholder.
+
+Implement a dedicated delivery page for mechanics and a corresponding delivery-management interface for dealers.
+
+For the MVP, use dealer-arranged delivery or manually coordinated independent delivery operators, with collection available as an alternative.
+
+Do not assume that the platform already has its own fleet.
+
+The workflow should support:
+
+1. Order confirmation.
+2. Delivery or collection selection.
+3. Destination and recipient contact details.
+4. Delivery fee, if applicable.
+5. Delivery assignment or coordination.
+6. Dispatch confirmation.
+7. Collection or pickup confirmation.
+8. In-transit status.
+9. Estimated arrival, where provided.
+10. Delivery completion.
+11. Recipient confirmation or issue reporting.
+
+Suggested statuses:
+
+* Not arranged.
+* Awaiting assignment.
+* Assigned.
+* Ready for pickup.
+* Picked up.
+* In transit.
+* Delivered.
+* Delayed.
+* Cancelled.
+
+Use only statuses appropriate to the actual delivery workflow.
+
+The mechanic dashboard must show current delivery status, relevant contact information, destination, and available timing information.
+
+Dealers must be able to update delivery progress only for their authorized orders.
+
+If delivery coordination is performed manually, make that explicit in the interface. Do not claim live GPS tracking, automatic courier assignment, or verified arrival times unless those capabilities are genuinely implemented.
+
+## 9. ADMINISTRATOR PANEL
+
+Preserve the administrator interface and visual direction represented in Figma.
+
+Implement:
+
+* Administrator authentication and protected access.
+* Overview of marketplace activity.
+* Dealer application review.
+* Approval, rejection, and requests for additional information.
+* Dealer account suspension and reactivation, where authorized.
+* Dealer and user directory.
+* Inventory oversight.
+* Part request monitoring.
+* Order and delivery monitoring.
+* Basic audit history for important administrative actions.
+
+An administrator action must be persisted and reflected throughout the application.
+
+Use secure server-side authorization for administrative operations. Never create an unrestricted admin account or rely on a hardcoded frontend role.
+
+Provide a secure way to bootstrap the first administrator in the development or deployment environment without publishing credentials.
+
+## 10. SHARED BUSINESS WORKFLOWS
+
+The application must connect all modules through shared records.
+
+The primary end-to-end flow is:
+
+Mechanic searches the marketplace → finds a listed part or submits a request → relevant dealers respond → mechanic compares offers → mechanic accepts an offer or proceeds with a valid listed-part order → order is confirmed → delivery or collection is arranged → status updates are recorded → mechanic confirms receipt.
+
+The dealer onboarding flow is:
+
+Dealer registers → submits business information → application is reviewed → administrator approves or requests changes → approved dealer accesses operational features.
+
+Every transition must be reflected in the appropriate dashboards.
+
+Use a consistent set of request, offer, order, and delivery identifiers so related records can be traced across the system.
+
+Do not create separate disconnected datasets for the mechanic, dealer, and administrator dashboards.
+
+## 11. DATA MODEL
+
+Design a coherent persistent schema. At minimum, include the following entities or equivalent collections:
+
+* Users.
+* DealerProfiles.
+* DealerApplications.
+* PartCategories.
+* InventoryListings.
+* PartRequests.
+* RequestAttachments.
+* DealerOffers.
+* Orders.
+* OrderItems.
+* Deliveries.
+* Notifications, if implemented.
+* AuditLogs for important privileged operations.
+
+Each entity should have a stable identifier, relevant ownership references, creation and update timestamps, and appropriate status fields.
+
+Maintain clear relationships between:
+
+* Users and roles.
+* Dealers and their listings.
+* Mechanics and their requests.
+* Requests and responding dealers.
+* Requests and offers.
+* Accepted offers and orders.
+* Orders and delivery records.
+
+Define suitable database indexes and query strategies.
+
+Use server-side validation and transactions or equivalent concurrency controls when multiple users can update the same order, accept competing offers, or purchase limited stock.
+
+Prevent duplicate order creation, double acceptance of offers, and invalid lifecycle transitions.
+
+Use database security rules and server authorization together where applicable.
+
+## 12. USER EXPERIENCE AND VISUAL QUALITY
+
+The result must match the supplied Figma design while remaining practical to use.
+
+Requirements:
+
+* Responsive layouts for desktop, tablet, and mobile.
+* Consistent navigation within each user role.
+* Reusable buttons, form fields, cards, tables, badges, dialogs, and empty states.
+* Accessible labels and keyboard navigation.
+* Readable typography and consistent spacing.
+* Useful form validation and error messages.
+* Confirmation dialogs for destructive or irreversible actions.
+* Search, filters, pagination, and sorting where appropriate.
+* Clear loading, empty, success, and failure states.
+* Appropriate image previews and voice-note playback controls.
+* No broken images, overflowing layouts, or inaccessible controls.
+* No unnecessary decorative elements that conflict with the Figma design.
+
+Avoid excessive animation. Prioritize speed, clarity, and reliability.
+
+## 13. SECURITY AND DATA INTEGRITY
+
+Implement:
+
+* Secure authentication and session handling.
+* Server-side role and resource authorization.
+* Input validation and sanitization.
+* Secure password handling through the selected authentication provider.
+* File-type, size, and upload authorization checks.
+* Protection against unauthorized data access.
+* Safe error handling without leaking secrets.
+* Rate limiting or abuse controls on sensitive endpoints where supported.
+* Database rules preventing unauthorized reads and writes.
+* Safe handling of dealer documents and private attachments.
+* Audit records for important administrative actions.
+
+Never trust prices, role assignments, stock availability, order totals, or permissions supplied by the client.
+
+Calculate financial totals and validate inventory on the server.
+
+Do not expose one user's private information to another user without a legitimate workflow requirement.
+
+## 14. TEST DATA AND DEVELOPMENT MODE
+
+Create a clearly separated development or demo environment containing realistic sample records.
+
+Include:
+
+* Several approved dealers.
+* A pending dealer application.
+* Multiple spare-parts listings.
+* Different stock levels and conditions.
+* Sample part requests.
+* Dealer offers.
+* Orders in different stages.
+* Deliveries with different statuses.
+
+Use plausible Gambian locations and GMD prices.
+
+Demo data must be clearly distinguished from production data.
+
+If demo accounts are provided, document how they are created and authenticated. Never embed production passwords or privileged credentials in frontend code.
+
+All sample records must be stored through the application's data layer. The UI must not depend on hardcoded arrays masquerading as a live database.
+
+## 15. IMPLEMENTATION AND TESTING PROCESS
+
+Work in the following order.
+
+### Phase 1: Inspect and plan
+
+* Inspect the existing codebase and available Figma materials.
+* Identify the stack and current implementation.
+* Map screens to routes and roles.
+* Define the database model and permission boundaries.
+* Identify external configuration requirements.
+* Establish a prioritized implementation checklist.
+
+### Phase 2: Application foundation
+
+* Implement routing and shared layouts.
+* Set up authentication.
+* Implement role-based access.
+* Configure database and storage.
+* Create the shared data-access and API layers.
+* Establish consistent design tokens and reusable components.
+
+### Phase 3: Dealer onboarding and inventory
+
+* Build dealer registration.
+* Implement the application-review workflow.
+* Enforce approval status.
+* Build inventory creation, editing, and management.
+* Populate marketplace search with persistent inventory records.
+
+### Phase 4: Mechanic discovery and requests
+
+* Build the mechanic dashboard.
+* Implement dealer browsing and global search.
+* Implement part details.
+* Implement request creation and attachment uploads.
+* Implement dealer responses and mechanic offer selection.
+
+### Phase 5: Orders and deliveries
+
+* Implement order creation and status transitions.
+* Connect accepted offers to orders.
+* Implement delivery or collection selection.
+* Build mechanic and dealer delivery pages.
+* Ensure status changes are persisted and shared across roles.
+
+### Phase 6: Administration
+
+* Implement dealer application review and administrative controls.
+* Add marketplace monitoring.
+* Enforce server-side authorization.
+
+### Phase 7: Quality assurance
+
+* Test all important user journeys.
+* Test permissions and invalid state transitions.
+* Test image and voice-note uploads.
+* Test responsive layouts.
+* Test persistence after reload and new sessions.
+* Fix errors and broken interactions.
+* Verify the production build.
+
+You may adjust the order when dependencies require it, but do not leave the core workflow disconnected.
+
+## 16. ACCEPTANCE CRITERIA
+
+The MVP is not complete until the following tests pass:
+
+1. A dealer can register and submit an application.
+2. A pending dealer cannot publish active listings or respond as an approved dealer.
+3. An administrator can review and approve the application.
+4. The approved dealer can create and update inventory.
+5. A mechanic can browse dealers and search inventory across all approved dealers.
+6. Selecting a result opens the correct dealer and part details.
+7. A mechanic can submit a request with images and a voice note.
+8. Authorized dealers can inspect the request attachments and submit offers.
+9. The mechanic can compare offers and accept one.
+10. The accepted offer creates or updates the correct order without duplicates.
+11. A valid listed-part order can be created with stock and price revalidated on the server.
+12. A mechanic can request delivery or choose collection.
+13. The dealer can update fulfilment status for an authorized order.
+14. The mechanic sees the corresponding delivery updates.
+15. Changes remain after page reload and are visible to the correct users.
+16. Unauthorized users cannot access or modify protected records by changing URLs or API requests.
+17. Search results, dashboard metrics, and status indicators reflect persistent records.
+18. The application works at common desktop and mobile viewport sizes.
+19. No primary action is a dead button or a fake success message.
+20. The application builds successfully and has documented setup and deployment instructions.
+
+## 17. SCOPE CONTROL
+
+This is a focused MVP to be developed within a three-week build window.
+
+Prioritize the working mechanic–dealer–order–delivery workflow over secondary features.
+
+Do not prioritize live GPS tracking, sophisticated payment integrations, automated logistics optimization, AI part recognition, or complex analytics ahead of the core workflow.
+
+The broader product may eventually support vehicle sales, rentals, driver discovery, towing, breakdown assistance, VIN-related features, and repair coordination. Keep the architecture extensible, but do not let these future modules delay the agreed spare-parts MVP. Implement them only where explicitly represented in the supplied design and required for the current demonstration.
+
+Do not add features simply because they are technically interesting.
+
+## 18. DEVELOPMENT RULES
+
+Follow these rules throughout implementation:
+
+* Do not stop after producing a visual prototype.
+* Do not replace existing working code without a clear reason.
+* Do not invent Figma screens or claim to have inspected inaccessible designs.
+* Do not use fake API responses or hardcoded data as a substitute for required backend functionality.
+* Do not simulate successful uploads, authentication, orders, or deliveries.
+* Do not swallow errors silently.
+* Do not create insecure shortcuts to make the demo work.
+* Do not implement every feature in one enormous component.
+* Do not leave primary navigation or essential buttons nonfunctional.
+* Do not claim a feature is complete until it has been implemented and tested.
+* Explain necessary trade-offs and external configuration requirements.
+* Preserve existing code and data wherever possible.
+* Run the available build and tests after significant implementation changes.
+
+When a requirement is ambiguous, choose the simplest secure implementation consistent with the Figma design and the product objectives. Ask me only when a decision materially affects the product or cannot safely be inferred.
+
+If you reach a tool or execution limit, preserve the working implementation, document the current state, identify unfinished tasks, and continue from the existing code rather than restarting.
+
+## 19. FINAL DELIVERABLE
+
+Deliver a working, maintainable MVP that includes:
+
+1. The implemented Figma-based interface.
+2. Mechanic, dealer, and administrator workflows.
+3. Authentication and role-based permissions.
+4. Persistent database integration.
+5. Inventory search and dealer browsing.
+6. Part requests with image and voice-note support.
+7. Dealer offers and order management.
+8. A functional delivery or collection workflow.
+9. Secure dealer onboarding and administrator approval.
+10. Development data and a reproducible testing procedure.
+11. Environment configuration documentation.
+12. Setup and deployment instructions.
+13. A concise list of completed features, limitations, and remaining tasks.
+
+At completion, provide a summary of the architecture, database collections, implemented routes, required environment variables, security configuration, and deployment steps.
+
+Clearly distinguish implemented features from features that still require configuration or further development.
+
+## FINAL INSTRUCTION
+
+Start by inspecting the supplied Figma design and existing project on the PDF . Then create an implementation plan and execute it systematically.
+
+Your goal is not to generate code that merely looks correct. Your goal is to build a coherent, secure, testable MVP that demonstrates how a mechanic in The Gambia can find a spare part, communicate with dealers, confirm an order, and arrange delivery without unnecessary trips between shops.
+
+**Build the complete workflow, preserve the design, verify the functionality, and report honestly on what works.**
